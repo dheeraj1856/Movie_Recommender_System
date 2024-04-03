@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommendation System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            text-align: center;
+        }
+        input[type="text"], button {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #recommendations {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Movie Recommender</h1>
+        <input type="text" id="movieName" placeholder="Enter a movie name..." autofocus>
+        <button onclick="getRecommendations()">Get Recommendations</button>
+        <div id="recommendations"></div>
+    </div>
+
+    <script>
+        async function getRecommendations() {
+            const movieName = document.getElementById('movieName').value;
+            if (!movieName.trim()) {
+                alert('Please enter a movie name');
+                return;
+            }
+            const response = await fetch(`/recommend?movie=${encodeURIComponent(movieName)}`);
+            if (!response.ok) {
+                alert('Failed to fetch recommendations');
+                return;
+            }
+            const recommendations = await response.json();
+
+            const recommendationsDiv = document.getElementById('recommendations');
+            recommendationsDiv.innerHTML = '<h2>Recommendations:</h2>'; // Clear previous and add heading
+            recommendations.forEach(movie => {
+                const p = document.createElement('p');
+                p.textContent = movie;
+                recommendationsDiv.appendChild(p);
+            });
+        }
+    </script>
+</body>
+</html>
